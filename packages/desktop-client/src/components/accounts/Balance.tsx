@@ -22,6 +22,7 @@ import { useFormat } from '#hooks/useFormat';
 import { useSelectedItems } from '#hooks/useSelected';
 import { useSheetValue } from '#hooks/useSheetValue';
 import type { Binding } from '#spreadsheet';
+import * as bindings from '#spreadsheet/bindings';
 
 type DetailedBalanceProps = {
   name: string;
@@ -175,6 +176,30 @@ function MoreBalances({ balanceQuery }: MoreBalancesProps) {
   );
 }
 
+type AvailableCreditProps = {
+  account: AccountEntity & { balance_limit: number };
+};
+
+export function AvailableCredit({ account }: AvailableCreditProps) {
+  const { t } = useTranslation();
+  const balance = useSheetValue<'account', 'balance'>(
+    bindings.accountBalance(account.id),
+  );
+
+  return (
+    <DetailedBalance
+      name={t('Available credit:')}
+      balance={account.balance_limit + (balance ?? 0)}
+    />
+  );
+}
+
+function hasCreditLimit(
+  account?: AccountEntity,
+): account is AccountEntity & { balance_limit: number } {
+  return account?.balance_limit != null && account.balance_limit > 0;
+}
+
 type BalancesProps = {
   balanceQuery: { name: `balance-query-${string}`; query: Query };
   showExtraBalances: boolean;
@@ -257,6 +282,8 @@ export function Balances({
           }}
         />
       </Button>
+
+      {hasCreditLimit(account) && <AvailableCredit account={account} />}
 
       {showExtraBalances && <MoreBalances balanceQuery={balanceQuery} />}
 

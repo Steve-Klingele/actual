@@ -1,6 +1,9 @@
 import React from 'react';
 
-import type { ScheduleEntity } from '@actual-app/core/types/models';
+import type {
+  AccountEntity,
+  ScheduleEntity,
+} from '@actual-app/core/types/models';
 import { render, screen } from '@testing-library/react';
 
 import { useCachedSchedules } from '#hooks/useCachedSchedules';
@@ -8,7 +11,7 @@ import { useSelectedItems } from '#hooks/useSelected';
 import { useSheetValue } from '#hooks/useSheetValue';
 import { TestProviders } from '#mocks';
 
-import { SelectedBalance } from './Balance';
+import { AvailableCredit, SelectedBalance } from './Balance';
 
 vi.mock('#hooks/useSelected', () => ({
   useSelectedItems: vi.fn(),
@@ -128,6 +131,45 @@ describe('SelectedBalance – preview (scheduled) transactions', () => {
     render(
       <TestProviders>
         <SelectedBalance selectedItems={selectedItems} />
+      </TestProviders>,
+    );
+
+    expect(screen.getByText('-100.00')).toBeInTheDocument();
+  });
+});
+
+describe('AvailableCredit', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  function creditCard(balanceLimit: number) {
+    return {
+      id: 'card-1',
+      name: 'Visa',
+      balance_limit: balanceLimit,
+    } as AccountEntity & { balance_limit: number };
+  }
+
+  test('subtracts the amount owed from the credit limit', () => {
+    vi.mocked(useSheetValue).mockReturnValue(-123456);
+
+    render(
+      <TestProviders>
+        <AvailableCredit account={creditCard(500000)} />
+      </TestProviders>,
+    );
+
+    expect(screen.getByText('Available credit:')).toBeInTheDocument();
+    expect(screen.getByText('3,765.44')).toBeInTheDocument();
+  });
+
+  test('shows a negative amount when the card is over its limit', () => {
+    vi.mocked(useSheetValue).mockReturnValue(-510000);
+
+    render(
+      <TestProviders>
+        <AvailableCredit account={creditCard(500000)} />
       </TestProviders>,
     );
 

@@ -740,7 +740,8 @@ type AccountMenuProps = {
       | 'toggle-reconciled'
       | 'toggle-net-worth-chart'
       | 'manage-columns'
-      | 'account-group',
+      | 'account-group'
+      | 'credit-limit',
   ) => void;
 };
 
@@ -789,6 +790,10 @@ function AccountMenu({
               } as const,
             ]
           : []),
+        {
+          name: 'credit-limit',
+          text: t('Set credit limit'),
+        },
         {
           name: 'toggle-reconciled',
           text: showReconciled

@@ -36,6 +36,7 @@ import { CoverModal } from './modals/CoverModal';
 import { CreateAccountModal } from './modals/CreateAccountModal';
 import { CreateEncryptionKeyModal } from './modals/CreateEncryptionKeyModal';
 import { CreateLocalAccountModal } from './modals/CreateLocalAccountModal';
+import { CreditLimitModal } from './modals/CreditLimitModal';
 import { EditUserAccess } from './modals/EditAccess';
 import { EditFieldModal } from './modals/EditFieldModal';
 import { EditRuleModal } from './modals/EditRuleModal';
@@ -140,6 +141,9 @@ export function Modals() {
 
         case 'account-groups':
           return <AccountGroupsModal key={key} {...modal.options} />;
+
+        case 'credit-limit':
+          return <CreditLimitModal key={key} {...modal.options} />;
 
         case 'close-account':
           return <CloseAccountModal key={key} {...modal.options} />;

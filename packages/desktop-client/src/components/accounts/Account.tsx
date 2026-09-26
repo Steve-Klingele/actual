@@ -831,7 +831,8 @@ class AccountInternal extends PureComponent<
       | 'toggle-reconciled'
       | 'toggle-net-worth-chart'
       | 'manage-columns'
-      | 'account-group',
+      | 'account-group'
+      | 'credit-limit',
   ) => {
     const accountId = this.props.accountId!;
     const account = this.props.accounts.find(
@@ -875,6 +876,18 @@ class AccountInternal extends PureComponent<
           pushModal({
             modal: {
               name: 'account-groups',
+              options: {
+                accountId,
+              },
+            },
+          }),
+        );
+        break;
+      case 'credit-limit':
+        this.props.dispatch(
+          pushModal({
+            modal: {
+              name: 'credit-limit',
               options: {
                 accountId,
               },
