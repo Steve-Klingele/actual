@@ -18,6 +18,7 @@ import { FinancialText } from '#components/FinancialText';
 import { PrivacyFilter } from '#components/PrivacyFilter';
 import { CellValue, CellValueText } from '#components/spreadsheet/CellValue';
 import { useCachedSchedules } from '#hooks/useCachedSchedules';
+import { useCreditCardConfig } from '#hooks/useCreditCardConfig';
 import { useFormat } from '#hooks/useFormat';
 import { useSelectedItems } from '#hooks/useSelected';
 import { useSheetValue } from '#hooks/useSheetValue';
@@ -177,27 +178,33 @@ function MoreBalances({ balanceQuery }: MoreBalancesProps) {
 }
 
 type AvailableCreditProps = {
-  account: AccountEntity & { balance_limit: number };
+  accountId: AccountEntity['id'];
+  limit: number;
 };
 
-export function AvailableCredit({ account }: AvailableCreditProps) {
+export function AvailableCredit({ accountId, limit }: AvailableCreditProps) {
   const { t } = useTranslation();
   const balance = useSheetValue<'account', 'balance'>(
-    bindings.accountBalance(account.id),
+    bindings.accountBalance(accountId),
   );
 
   return (
     <DetailedBalance
       name={t('Available credit:')}
-      balance={account.balance_limit + (balance ?? 0)}
+      balance={limit + (balance ?? 0)}
     />
   );
 }
 
-function hasCreditLimit(
-  account?: AccountEntity,
-): account is AccountEntity & { balance_limit: number } {
-  return account?.balance_limit != null && account.balance_limit > 0;
+function AccountAvailableCredit({
+  accountId,
+}: {
+  accountId: AccountEntity['id'];
+}) {
+  const [config] = useCreditCardConfig(accountId);
+  return config?.limit ? (
+    <AvailableCredit accountId={accountId} limit={config.limit} />
+  ) : null;
 }
 
 type BalancesProps = {
@@ -283,7 +290,7 @@ export function Balances({
         />
       </Button>
 
-      {hasCreditLimit(account) && <AvailableCredit account={account} />}
+      {account && <AccountAvailableCredit accountId={account.id} />}
 
       {showExtraBalances && <MoreBalances balanceQuery={balanceQuery} />}
 

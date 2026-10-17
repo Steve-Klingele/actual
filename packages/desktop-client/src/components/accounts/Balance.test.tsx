@@ -1,9 +1,6 @@
 import React from 'react';
 
-import type {
-  AccountEntity,
-  ScheduleEntity,
-} from '@actual-app/core/types/models';
+import type { ScheduleEntity } from '@actual-app/core/types/models';
 import { render, screen } from '@testing-library/react';
 
 import { useCachedSchedules } from '#hooks/useCachedSchedules';
@@ -143,20 +140,12 @@ describe('AvailableCredit', () => {
     vi.clearAllMocks();
   });
 
-  function creditCard(balanceLimit: number) {
-    return {
-      id: 'card-1',
-      name: 'Visa',
-      balance_limit: balanceLimit,
-    } as AccountEntity & { balance_limit: number };
-  }
-
   test('subtracts the amount owed from the credit limit', () => {
     vi.mocked(useSheetValue).mockReturnValue(-123456);
 
     render(
       <TestProviders>
-        <AvailableCredit account={creditCard(500000)} />
+        <AvailableCredit accountId="card-1" limit={500000} />
       </TestProviders>,
     );
 
@@ -169,7 +158,7 @@ describe('AvailableCredit', () => {
 
     render(
       <TestProviders>
-        <AvailableCredit account={creditCard(500000)} />
+        <AvailableCredit accountId="card-1" limit={500000} />
       </TestProviders>,
     );
 

@@ -57,7 +57,8 @@ async function saveSyncedPrefs({
 
   await db.update('preferences', {
     id,
-    value,
+    // undefined clears the pref; the sync serializer only accepts null
+    value: value ?? null,
   });
 
   if (FORMULA_FORMAT_SYNCED_PREFS.has(id)) {

@@ -71,7 +71,9 @@ export type SyncedPrefs = Partial<
     | `flip-amount-${string}-${'csv' | 'qif'}`
     | `flags.${FeatureFlag}`
     | `learn-categories`
-    | `show-hidden-tags`,
+    | `show-hidden-tags`
+    // Shared with the Actuali/Actua mobile clients; see desktop-client accounts/creditCard.ts
+    | `actuali:credit_card:${string}`,
     string
   >
 >;

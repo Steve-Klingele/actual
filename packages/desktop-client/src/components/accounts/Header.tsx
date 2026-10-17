@@ -792,7 +792,7 @@ function AccountMenu({
           : []),
         {
           name: 'credit-limit',
-          text: t('Set credit limit'),
+          text: t('Credit card settings'),
         },
         {
           name: 'toggle-reconciled',
